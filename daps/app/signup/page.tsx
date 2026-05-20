@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PageMenuShell } from "@/components/ui/page-menu-shell";
 
 interface PupilProps {
   size?: number;
@@ -170,7 +169,7 @@ const EyeBall = ({
   );
 };
 
-function LoginPage() {
+function SignupPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/home";
@@ -180,6 +179,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const [mouseX, setMouseX] = useState<number>(0);
   const [mouseY, setMouseY] = useState<number>(0);
   const [isPurpleBlinking, setIsPurpleBlinking] = useState(false);
@@ -187,6 +187,7 @@ function LoginPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLookingAtEachOther, setIsLookingAtEachOther] = useState(false);
   const [isPurplePeeking, setIsPurplePeeking] = useState(false);
+
   const purpleRef = useRef<HTMLDivElement>(null);
   const blackRef = useRef<HTMLDivElement>(null);
   const yellowRef = useRef<HTMLDivElement>(null);
@@ -297,24 +298,19 @@ function LoginPage() {
     setIsLoading(true);
 
     await new Promise((resolve) => setTimeout(resolve, 300));
-    if (email === "erik@gmail.com" && password === "1234") {
-      router.push(nextPath);
-      router.refresh();
+    if (!email || !password) {
+      setError("Please enter email and password.");
       setIsLoading(false);
       return;
     }
 
-    setError("Invalid email or password. Please try again.");
+    router.push(nextPath);
+    router.refresh();
     setIsLoading(false);
-  };
-
-  const handleGoogleLogin = () => {
-    setError("Google login is not configured.");
   };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <PageMenuShell />
       <div className="relative hidden lg:flex flex-col justify-between bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-12 text-primary-foreground">
         <div className="relative z-20">
           <div className="flex items-center gap-2 text-lg font-semibold">
@@ -547,7 +543,7 @@ function LoginPage() {
           </div>
 
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back!</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">Create your account</h1>
             <p className="text-muted-foreground text-sm">Please enter your details</p>
           </div>
 
@@ -611,7 +607,7 @@ function LoginPage() {
             )}
 
             <Button type="submit" className="w-full h-12 text-base font-medium" size="lg" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Log in"}
+              {isLoading ? "Creating account..." : "Sign up"}
             </Button>
           </form>
 
@@ -620,18 +616,25 @@ function LoginPage() {
               variant="outline"
               className="w-full h-12 bg-background border-border/60 hover:bg-accent"
               type="button"
-              onClick={handleGoogleLogin}
+              onClick={() => setError("Google sign up is not configured.")}
             >
               <Mail className="mr-2 size-5" />
-              Log in with Google
+              Sign up with Google
             </Button>
           </div>
 
+          <div className="text-center text-sm text-muted-foreground mt-8">
+            Already have an account?{" "}
+            <a href="/login" className="text-foreground font-medium hover:underline">
+              Log in
+            </a>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default LoginPage;
-export const Component = LoginPage;
+export default SignupPage;
+export const Component = SignupPage;
+

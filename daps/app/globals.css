@@ -35,8 +35,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html.light body {
+html.light {
   background: radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+html.light body {
+  background: transparent;
 }
 
 html.dark body {
@@ -46,6 +53,19 @@ html.dark body {
 @media (prefers-color-scheme: dark) {
   html:not(.light):not(.dark) body {
     background: #020617;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html:not(.light):not(.dark) {
+    background: radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+  html:not(.light):not(.dark) body {
+    background: transparent;
   }
 }
 

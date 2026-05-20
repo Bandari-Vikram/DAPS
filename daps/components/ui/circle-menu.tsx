@@ -2,13 +2,13 @@
 
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { Menu, X, Home, Grid3X3, Info, Phone, Sun, Moon, LogIn } from "lucide-react";
+import { Menu, X, Home, Info, Phone, Sun, Moon, LogIn } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const CONSTANTS = {
   itemSize: 48,
-  containerSize: 250,
+  containerSize: 230,
   openStagger: 0.02,
   closeStagger: 0.07,
 };
@@ -232,7 +232,12 @@ function CircleMenu({
   onOpenChange?: (isOpen: boolean) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "light" || storedTheme === "dark") return storedTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const animate = useAnimationControls();
 
   const applyTheme = (nextTheme: "light" | "dark") => {
@@ -243,27 +248,15 @@ function CircleMenu({
 
   const setThemePreference = (nextTheme: "light" | "dark") => {
     setTheme(nextTheme);
-    applyTheme(nextTheme);
     localStorage.setItem("theme", nextTheme);
   };
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme =
-      storedTheme === "light" || storedTheme === "dark"
-        ? storedTheme
-        : systemPrefersDark
-          ? "dark"
-          : "light";
-
-    setTheme(initialTheme);
-    applyTheme(initialTheme);
-  }, []);
+    applyTheme(theme);
+  }, [theme]);
 
   const items = [
-    { label: "Home", icon: <Home size={16} />, href: "/" },
-    { label: "Apps", icon: <Grid3X3 size={16} />, href: "/apps" },
+    { label: "Home", icon: <Home size={16} />, href: "/home" },
     { label: "About", icon: <Info size={16} />, href: "/about" },
     { label: "Contacts", icon: <Phone size={16} />, href: "/contacts" },
     { label: "Login", icon: <LogIn size={16} />, href: "/login" },

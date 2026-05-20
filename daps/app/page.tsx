@@ -1,36 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { PageMenuShell } from "@/components/ui/page-menu-shell";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { HandWrittenTitle } from "@/components/ui/hand-written-title";
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+  const showSplash = true;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace("/home");
+    }, 2800);
+
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <main className="text-foreground transition-colors duration-300">
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-6 px-6 text-center"
-      >
-        <PageMenuShell center onOpenChange={setMenuOpen} />
-        <h1
-          className={`text-5xl font-semibold tracking-tight transition-opacity duration-200 sm:text-6xl ${
-            menuOpen ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          DAPS
-        </h1>
-        <p
-          className={`max-w-xl text-lg text-foreground/85 transition-opacity duration-200 ${
-            menuOpen ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          Dayananda Sagar App Store
-        </p>
-      </motion.div>
+      <AnimatePresence mode="wait">
+        {showSplash ? (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+            transition={{ duration: 0.5 }}
+            className="flex min-h-screen items-center justify-center px-6"
+          >
+            <HandWrittenTitle />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </main>
   );
 }
